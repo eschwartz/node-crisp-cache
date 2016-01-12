@@ -968,6 +968,17 @@ describe("CrispCache", function () {
             assert.equal(cb.callCount, 3, 'Should invoke callback passed to the cached function');
         });
 
+        it('should propogate errors from fetcher through to cache wrapper', function(done) {
+            var cached = CrispCache.wrap(function(cb) {
+                cb(new Error('error from fetcher'));
+            });
+
+            cached(function(err) {
+                assert.strictEqual(err && err.message, 'error from fetcher');
+                done();
+            });
+        });
+
         it('should wrap a function and bind events', function() {
             var orig = function(a, cb) {
                 cb(null, 'RETURN VAL');
